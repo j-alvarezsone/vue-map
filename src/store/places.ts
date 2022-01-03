@@ -5,7 +5,7 @@ interface PlacesState {
   userLocation?: [number, number]; // lng, lat
 }
 
-export const usePlacesStore = defineStore("places", {
+export const usePlaces = defineStore("places", {
   state: (): PlacesState => ({
     isLoading: true,
     userLocation: undefined,
@@ -16,15 +16,14 @@ export const usePlacesStore = defineStore("places", {
     },
   },
   actions: {
-    setLngLat(coords) {
-      console.log({ coords });
-      this.userLocation = coords;
+    setLngLat({ lng, lat }: { lng: number; lat: number }) {
+      this.userLocation = [lng, lat];
       this.isLoading = false;
     },
     getInitialLocation() {
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
-          this.setLngLat(coords);
+          this.setLngLat({ lng: coords.longitude, lat: coords.latitude });
         },
         (err) => {
           console.error(err);

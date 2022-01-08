@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
 interface PlacesState {
   isLoading: boolean;
   userLocation?: [number, number]; // lng, lat
 }
 
-export const usePlaces = defineStore("places", {
+export const usePlaces = defineStore('places', {
   state: (): PlacesState => ({
     isLoading: true,
     userLocation: undefined,
@@ -27,8 +27,8 @@ export const usePlaces = defineStore("places", {
         },
         (err) => {
           console.error(err);
-          throw new Error("No geolocation");
-        }
+          throw new Error('No geolocation');
+        },
       );
     },
   },

@@ -1,14 +1,51 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import Mapboxgl from 'mapbox-gl';
+import { ref, onMounted, watch } from 'vue';
 import { usePlacesStore } from '../../composables';
 
 const { isLoading, userLocation, isUserLocationReady } = usePlacesStore();
 
 const mapElement = ref<HTMLElement>();
 
+const initMap = async () => {
+  if (!mapElement.value) throw new Error('Div element not exist');
+  if (!userLocation.value) throw new Error('User location not exist');
+
+  await Promise.resolve();
+
+  const map = new Mapboxgl.Map({
+    container: mapElement.value, // container ID
+    style: 'mapbox://styles/mapbox/streets-v11', // style URL
+    center: userLocation.value, // starting position [lng, lat]
+    zoom: 15, // starting zoom
+  });
+  const myLocationPopUp = new Mapboxgl.Popup()
+    .setLngLat(userLocation.value)
+    .setHTML(
+      `
+      <h4>I'm here</h4></p>
+      <p>Currently in Roztoky</p>
+      `,
+    )
+    .addTo(map);
+
+  const myLocationMarker = new Mapboxgl.Marker().setLngLat(userLocation.value).setPopup(myLocationPopUp).addTo(map);
+};
+
 onMounted(() => {
-  console.log(mapElement.value);
+  if (isUserLocationReady.value) {
+    return initMap();
+  }
 });
+
+watch(
+  () => isUserLocationReady.value,
+  (newValue) => {
+    if (newValue) {
+      return initMap();
+    }
+  },
+);
 </script>
 
 <template>
@@ -38,6 +75,5 @@ onMounted(() => {
   position: fixed;
   width: 100vw;
   height: 100vh;
-  background-color: red;
 }
 </style>

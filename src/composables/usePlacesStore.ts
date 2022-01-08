@@ -1,10 +1,10 @@
-import { usePlaces } from "../store/places";
-import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
+import { usePlaces } from '../store/places';
+import { computed, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 
 export const usePlacesStore = () => {
   const places = usePlaces();
-  const { isUserLocationReady } = storeToRefs(places);
+  const { isUserLocationReady, isLoading, userLocation } = storeToRefs(places);
   const { getInitialLocation } = places;
 
   onMounted(() => {
@@ -13,5 +13,9 @@ export const usePlacesStore = () => {
     }
   });
 
-  return {};
+  return {
+    isLoading: computed(() => isLoading.value),
+    userLocation: computed(() => userLocation?.value),
+    isUserLocationReady: computed<boolean>(() => isUserLocationReady.value),
+  };
 };

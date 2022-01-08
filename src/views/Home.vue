@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { usePlacesStore } from "../composables";
+import MapView from "../components/mapview/MapView.vue";
 
 usePlacesStore();
 </script>
 
 <template>
-  <div class="container">
-    <img alt="Vue logo" src="../assets/logo.png" />
-  </div>
+  <MapView />
 </template>
 
 <style scoped></style>

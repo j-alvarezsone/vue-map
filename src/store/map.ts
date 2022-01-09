@@ -14,6 +14,14 @@ export const useMap = defineStore('map', {
     distance: undefined,
     durations: undefined,
   }),
-  getters: {},
-  actions: {},
+  getters: {
+    isMapReady: (state): boolean => {
+      return !!state.map;
+    },
+  },
+  actions: {
+    setMap(map: Mapboxgl.Map) {
+      this.map = map;
+    },
+  },
 });

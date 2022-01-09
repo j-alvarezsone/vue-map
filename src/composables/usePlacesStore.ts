@@ -3,9 +3,9 @@ import { computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 
 export const usePlacesStore = () => {
-  const places = usePlaces();
-  const { isUserLocationReady, isLoading, userLocation } = storeToRefs(places);
-  const { getInitialLocation } = places;
+  const placesStore = usePlaces();
+  const { isUserLocationReady, isLoading, userLocation } = storeToRefs(placesStore);
+  const { getInitialLocation } = placesStore;
 
   onMounted(() => {
     if (!isUserLocationReady.value) {

@@ -2,8 +2,10 @@
 import Mapboxgl from 'mapbox-gl';
 import { ref, onMounted, watch } from 'vue';
 import { usePlacesStore } from '../../composables';
+import { useMapStore } from '../../composables/useMapStore';
 
 const { isLoading, userLocation, isUserLocationReady } = usePlacesStore();
+const { setMap } = useMapStore();
 
 const mapElement = ref<HTMLElement>();
 
@@ -30,6 +32,8 @@ const initMap = async () => {
     .addTo(map);
 
   const myLocationMarker = new Mapboxgl.Marker().setLngLat(userLocation.value).setPopup(myLocationPopUp).addTo(map);
+
+  setMap(map);
 };
 
 onMounted(() => {

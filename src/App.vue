@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Home from "./views/Home.vue";
+import Home from './views/Home.vue';
 </script>
 
 <template>
@@ -19,6 +19,5 @@ import Home from "./views/Home.vue";
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  text-align: center;
 }
 </style>

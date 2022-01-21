@@ -1,11 +1,30 @@
 <script lang="ts" setup>
 import SearchResult from '../search-results/SearchResult.vue';
+import { ref, computed } from 'vue';
+
+const debounceTimeout = ref();
+const debouncedValue = ref<string>('');
+
+const searchTerm = computed({
+  get() {
+    return debouncedValue.value;
+  },
+  set(value: string) {
+    // Cada vez que la persona escriba algo va limpiar el timeout
+    if (debounceTimeout.value) {
+      clearTimeout(debounceTimeout.value);
+    }
+    // Cuando deja de escribir se ejecuta este código
+    debounceTimeout.value = setTimeout(() => {
+      debouncedValue.value = value;
+    }, 500);
+  },
+});
 </script>
 
 <template>
   <div class="searchbar-container">
-    <input type="text" class="form-control" placeholder="Search places" />
-
+    <input v-model="searchTerm" type="text" class="form-control" placeholder="Search places" />
     <SearchResult />
   </div>
 </template>

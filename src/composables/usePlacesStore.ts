@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 export const usePlacesStore = () => {
   const placesStore = usePlaces();
   const { isUserLocationReady, isLoading, userLocation } = storeToRefs(placesStore);
-  const { getInitialLocation } = placesStore;
+  const { getInitialLocation, searchPlacesByTerm } = placesStore;
 
   onMounted(() => {
     if (!isUserLocationReady.value) {
@@ -17,5 +17,6 @@ export const usePlacesStore = () => {
     isLoading: computed(() => isLoading.value),
     userLocation: computed(() => userLocation?.value),
     isUserLocationReady: computed<boolean>(() => isUserLocationReady.value),
+    searchPlacesByTerm: (query = '') => searchPlacesByTerm(query),
   };
 };

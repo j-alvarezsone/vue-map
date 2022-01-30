@@ -31,5 +31,8 @@ export const usePlaces = defineStore('places', {
         },
       );
     },
+    async searchPlacesByTerm(query: string) {
+      console.log('Pinia', query);
+    },
   },
 });

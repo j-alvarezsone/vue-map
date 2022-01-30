@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import SearchResult from '../search-results/SearchResult.vue';
 import { ref, computed } from 'vue';
+import { usePlacesStore } from '../../composables';
 
 const debounceTimeout = ref();
 const debouncedValue = ref<string>('');
-
+const { searchPlacesByTerm } = usePlacesStore();
 const searchTerm = computed({
   get() {
     return debouncedValue.value;
@@ -17,6 +18,7 @@ const searchTerm = computed({
     // Cuando deja de escribir se ejecuta este código
     debounceTimeout.value = setTimeout(() => {
       debouncedValue.value = value;
+      searchPlacesByTerm(value);
     }, 500);
   },
 });

@@ -25,7 +25,7 @@ const searchTerm = computed({
 </script>
 
 <template>
-  <div class="searchbar-container">
+  <div class="searchbar-container max-height: 100px">
     <input v-model="searchTerm" type="text" class="form-control" placeholder="Search places" />
     <SearchResult />
   </div>
@@ -41,8 +41,9 @@ const searchTerm = computed({
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   width: 250px;
   border-radius: 10px;
-  overflow: hidden;
+  overflow-y: auto;
   padding: 5px;
+  max-height: 58rem;
 }
 
 input {

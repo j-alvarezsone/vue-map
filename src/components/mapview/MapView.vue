@@ -17,7 +17,7 @@ const initMap = async () => {
 
   const map = new Mapboxgl.Map({
     container: mapElement.value, // container ID
-    style: 'mapbox://styles/mapbox/streets-v11', // style URL
+    style: 'mapbox://sprites/mapbox/bright-v8', // style URL
     center: userLocation.value, // starting position [lng, lat]
     zoom: 15, // starting zoom
   });

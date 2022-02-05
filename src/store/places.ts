@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import { searchApi } from '../apis';
+import { PlacesResponse } from '../interfaces/places';
 
 interface PlacesState {
   isLoading: boolean;
@@ -32,7 +34,12 @@ export const usePlaces = defineStore('places', {
       );
     },
     async searchPlacesByTerm(query: string) {
-      console.log('Pinia', query);
+      const resp = await searchApi.get<PlacesResponse>(`/${query}.json`, {
+        params: {
+          proximity: this.userLocation?.join(','),
+        },
+      });
+      console.log(resp.data.features);
     },
   },
 });

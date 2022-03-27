@@ -43,7 +43,7 @@ const searchTerm = computed({
   border-radius: 10px;
   overflow-y: auto;
   padding: 5px;
-  max-height: 58rem;
+  max-height: 48rem;
 }
 
 input {

@@ -5,13 +5,13 @@ import Mapboxgl from 'mapbox-gl';
 import { Feature } from '../interfaces/places';
 export const useMapStore = () => {
   const mapStore = useMap();
-  const { map, distance, durations, isMapReady } = storeToRefs(mapStore);
+  const { map, distance, duration, isMapReady } = storeToRefs(mapStore);
   const { setMap, setPlaceMarkers, getRouteBetweenPoints } = mapStore;
 
   return {
     map: computed(() => map?.value),
     distance: computed(() => distance?.value),
-    durations: computed(() => durations?.value),
+    duration: computed(() => duration?.value),
     isMapReady: computed<boolean>(() => isMapReady.value),
     setMap: (map: Mapboxgl.Map) => setMap(map),
     setPlaceMarkers: (places: Feature[]) => setPlaceMarkers(places),

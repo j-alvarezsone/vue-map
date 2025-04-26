@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Feature } from "../../interfaces/places";
+import type { Feature } from "../../../interfaces/places";
 import { ref, watch } from "vue";
-import { useMapActions, useMapState } from "../../store/map";
-import { usePlacesState } from "../../store/places";
+import { useMapActions, useMapState } from "../../../store/map";
+import { usePlacesState } from "../../../store/places";
 
 const { isLoadingPlaces, places, userLocation } = usePlacesState();
 const { map } = useMapState();

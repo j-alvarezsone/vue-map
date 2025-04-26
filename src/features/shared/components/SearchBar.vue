@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { usePlacesActions } from "../../store/places";
-import SearchResult from "../search-results/SearchResult.vue";
+import { usePlacesActions } from "../../../store/places";
+import SearchResult from "./SearchResult.vue";
 
 const debounceTimeout = ref();
 const debouncedValue = ref<string>("");

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Mapboxgl from "mapbox-gl";
 import { onMounted, ref, watch } from "vue";
-import { useMapActions } from "../../store/map";
-import { usePlacesState } from "../../store/places";
+import { useMapActions } from "../../../store/map";
+import { usePlacesState } from "../../../store/places";
 
 const { isLoading, userLocation, isUserLocationReady } = usePlacesState();
 const { setMap } = useMapActions();

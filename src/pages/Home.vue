@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import MapView from "../components/mapview/MapView.vue";
-import MyLocationBtn from "../components/my-location-btn/MyLocationBtn.vue";
-import SearchBar from "../components/searchbar/SearchBar.vue";
-import TripDetails from "../components/trip-details/TripDetails.vue";
+import MapView from "../features/map/components/MapView.vue";
+import MyLocationBtn from "../features/shared/components/MyLocationBtn.vue";
+import SearchBar from "../features/shared/components/SearchBar.vue";
+import TripDetails from "../features/shared/components/TripDetails.vue";
 import { usePlacesActions } from "../store/places";
 
 const { getInitialLocation } = usePlacesActions();

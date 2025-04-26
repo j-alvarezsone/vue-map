@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useMapState } from "../../store/map";
-import { usePlacesState } from "../../store/places";
+import { useMapState } from "../../../store/map";
+import { usePlacesState } from "../../../store/places";
 
 const { userLocation, isUserLocationReady } = usePlacesState();
 const { map, isMapReady } = useMapState();

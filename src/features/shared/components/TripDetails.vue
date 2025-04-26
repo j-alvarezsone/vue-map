@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useMapState } from "../../store/map";
+import { useMapState } from "../../../store/map";
 
 const { distance, duration } = useMapState();
 </script>

@@ -1,26 +1,36 @@
 {
   "name": "vue-map",
   "version": "0.0.0",
+  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "type-check": "npx nuxi typecheck"
   },
   "dependencies": {
     "@types/axios": "^0.14.4",
-    "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^22.15.2",
     "axios": "^1.9.0",
     "mapbox-gl": "^3.11.1",
-    "pinia": "^2.0.9",
+    "pinia": "^3.0.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^4.12.0",
     "@vitejs/plugin-vue": "^5.2.3",
+    "eslint": "^9.25.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.3",
     "vue-tsc": "^2.2.10"
   },
-  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f"
+  "lint-staged": {
+    "*": "pnpm lint"
+  }
 }

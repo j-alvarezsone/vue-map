@@ -1,21 +1,20 @@
 <script lang="ts" setup>
-import SearchResult from '../search-results/SearchResult.vue';
-import { ref, computed } from 'vue';
-import { usePlacesStore } from '../../composables';
+import { computed, ref } from "vue";
+import { usePlacesActions } from "../../store/places";
+import SearchResult from "../search-results/SearchResult.vue";
 
 const debounceTimeout = ref();
-const debouncedValue = ref<string>('');
-const { searchPlacesByTerm } = usePlacesStore();
+const debouncedValue = ref<string>("");
+const { searchPlacesByTerm } = usePlacesActions();
 const searchTerm = computed({
   get() {
     return debouncedValue.value;
   },
   set(value: string) {
-    // Cada vez que la persona escriba algo va limpiar el timeout
     if (debounceTimeout.value) {
       clearTimeout(debounceTimeout.value);
     }
-    // Cuando deja de escribir se ejecuta este código
+
     debounceTimeout.value = setTimeout(() => {
       debouncedValue.value = value;
       searchPlacesByTerm(value);
@@ -26,7 +25,7 @@ const searchTerm = computed({
 
 <template>
   <div class="searchbar-container max-height: 100px">
-    <input v-model="searchTerm" type="text" class="form-control" placeholder="Search places" />
+    <input v-model="searchTerm" type="text" class="form-control" placeholder="Search places">
     <SearchResult />
   </div>
 </template>

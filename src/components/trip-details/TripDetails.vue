@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { useMapStore } from '../../composables/useMapStore';
-const { distance, duration } = useMapStore();
+import { useMapState } from "../../store/map";
+
+const { distance, duration } = useMapState();
 </script>
 
 <template>

@@ -1,69 +1,84 @@
-import { defineStore } from 'pinia';
-import { searchApi } from '../apis';
-import { PlacesResponse, Feature } from '../interfaces/places';
+import type { Feature, PlacesResponse } from "../interfaces/places";
+import { defineStore, storeToRefs } from "pinia";
+import { computed, ref } from "vue";
+import { searchApi } from "../apis";
 
-interface PlacesState {
-  isLoading: boolean;
-  userLocation?: [number, number]; // lng, lat
-  isLoadingPlaces: boolean;
-  places: Feature[];
-}
+export type UserLocation = [number, number]; // [lng, lat]
 
-export const usePlaces = defineStore('places', {
-  state: (): PlacesState => ({
-    isLoading: true,
-    userLocation: undefined,
-    isLoadingPlaces: false,
-    places: [],
-  }),
-  getters: {
-    isUserLocationReady: (state) => {
-      return !!state.userLocation;
-    },
-  },
-  actions: {
-    setLngLat({ lng, lat }: { lng: number; lat: number }) {
-      this.userLocation = [lng, lat];
-      this.isLoading = false;
-    },
-    setIsLoadingPlaces() {
-      this.isLoadingPlaces = true;
-    },
-    setPlaces(places: Feature[]) {
-      this.places = places;
-      this.isLoadingPlaces = false;
-    },
-    getInitialLocation() {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          this.setLngLat({ lng: coords.longitude, lat: coords.latitude });
-        },
-        (err) => {
-          console.error(err);
-          throw new Error('No geolocation');
-        },
-      );
-    },
-    async searchPlacesByTerm(query: string): Promise<Feature[]> {
-      if (query.length === 0) {
-        this.setPlaces([]);
-        return [];
-      }
+export const usePlacesStore = defineStore("places", () => {
+  const isLoading = ref(true);
+  const userLocation = ref<UserLocation | undefined>(undefined);
+  const isLoadingPlaces = ref(false);
+  const places = ref<Feature[]>([]);
 
-      if (!this.userLocation) {
-        throw new Error('No user location');
-      }
+  const isUserLocationReady = computed(() => !!userLocation.value);
 
-      this.setIsLoadingPlaces();
+  function setLngLat({ lng, lat }: { lng: number, lat: number }) {
+    userLocation.value = [lng, lat];
+    isLoading.value = false;
+  }
 
-      const resp = await searchApi.get<PlacesResponse>(`/${query}.json`, {
-        params: {
-          proximity: this.userLocation?.join(','),
-        },
-      });
-      this.setPlaces(resp.data.features);
+  function setIsLoadingPlaces() {
+    isLoadingPlaces.value = true;
+  }
 
-      return resp.data.features;
-    },
-  },
+  function setPlaces(newPlaces: Feature[]) {
+    places.value = newPlaces;
+    isLoadingPlaces.value = false;
+  }
+
+  function getInitialLocation() {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setLngLat({ lng: coords.longitude, lat: coords.latitude });
+      },
+      (err) => {
+        console.error(err);
+        throw new Error("No geolocation");
+      },
+    );
+  }
+
+  async function searchPlacesByTerm(query: string): Promise<Feature[]> {
+    if (query.length === 0) {
+      setPlaces([]);
+      return [];
+    }
+    if (!userLocation.value) {
+      throw new Error("No user location");
+    }
+    setIsLoadingPlaces();
+    const resp = await searchApi.get<PlacesResponse>(`/${query}.json`, {
+      params: {
+        proximity: userLocation.value.join(","),
+      },
+    });
+    setPlaces(resp.data.features);
+    return resp.data.features;
+  }
+
+  return {
+    isLoading,
+    userLocation,
+    isLoadingPlaces,
+    places,
+    isUserLocationReady,
+    setLngLat,
+    setIsLoadingPlaces,
+    setPlaces,
+    getInitialLocation,
+    searchPlacesByTerm,
+  };
 });
+
+export const usePlacesState = () => storeToRefs(usePlacesStore());
+export function usePlacesActions() {
+  const placesStore = usePlacesStore();
+  return {
+    setLngLat: placesStore.setLngLat,
+    setIsLoadingPlaces: placesStore.setIsLoadingPlaces,
+    setPlaces: placesStore.setPlaces,
+    getInitialLocation: placesStore.getInitialLocation,
+    searchPlacesByTerm: placesStore.searchPlacesByTerm,
+  };
+}

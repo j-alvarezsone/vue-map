@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import Mapboxgl from 'mapbox-gl';
-import { ref, onMounted, watch } from 'vue';
-import { usePlacesStore } from '../../composables';
-import { useMapStore } from '../../composables/useMapStore';
+import Mapboxgl from "mapbox-gl";
+import { onMounted, ref, watch } from "vue";
+import { useMapActions } from "../../store/map";
+import { usePlacesState } from "../../store/places";
 
-const { isLoading, userLocation, isUserLocationReady } = usePlacesStore();
-const { setMap } = useMapStore();
+const { isLoading, userLocation, isUserLocationReady } = usePlacesState();
+const { setMap } = useMapActions();
 
 const mapElement = ref<HTMLElement>();
 
-const initMap = async () => {
-  if (!mapElement.value) throw new Error('Div element not exist');
-  if (!userLocation.value) throw new Error('User location not exist');
+async function initMap() {
+  if (!mapElement.value)
+    throw new Error("Div element not exist");
+  if (!userLocation.value)
+    throw new Error("User location not exist");
 
   await Promise.resolve();
 
   const map = new Mapboxgl.Map({
-    container: mapElement.value, // container ID
-    style: 'mapbox://sprites/mapbox/bright-v8', // style URL
-    center: userLocation.value, // starting position [lng, lat]
+    container: mapElement.value,
+    style: "mapbox://styles/mapbox/streets-v12",
+    center: userLocation.value,
     zoom: 15, // starting zoom
   });
   const myLocationPopUp = new Mapboxgl.Popup()
@@ -31,10 +33,10 @@ const initMap = async () => {
     )
     .addTo(map);
 
-  const myLocationMarker = new Mapboxgl.Marker().setLngLat(userLocation.value).setPopup(myLocationPopUp).addTo(map);
+  new Mapboxgl.Marker().setLngLat(userLocation.value).setPopup(myLocationPopUp).addTo(map);
 
   setMap(map);
-};
+}
 
 onMounted(() => {
   if (isUserLocationReady.value) {
@@ -53,7 +55,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="!isUserLocationReady" class="loading-map d-flex justify-content-center align-items-center">
+  <div v-if="!isUserLocationReady || isLoading" class="loading-map d-flex justify-content-center align-items-center">
     <div class="text-center">
       <h3>Please wait</h3>
       <span>Locating...</span>

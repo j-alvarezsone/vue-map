@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { usePlacesStore } from '../../composables';
-import { ref, watch } from 'vue';
-import { Feature } from '../../interfaces/places';
-import { useMapStore } from '../../composables/useMapStore';
+import type { Feature } from "../../interfaces/places";
+import { ref, watch } from "vue";
+import { useMapActions, useMapState } from "../../store/map";
+import { usePlacesState } from "../../store/places";
 
-const { isLoadingPlaces, places, userLocation } = usePlacesStore();
-const { map, setPlaceMarkers, getRouteBetweenPoints } = useMapStore();
+const { isLoadingPlaces, places, userLocation } = usePlacesState();
+const { map } = useMapState();
+const { setPlaceMarkers, getRouteBetweenPoints } = useMapActions();
 
-const activePlace = ref<string>('');
-const onPlaceClicked = async (place: Feature) => {
+const activePlace = ref<string>("");
+async function onPlaceClicked(place: Feature) {
   activePlace.value = place.id;
 
   const [lng, lat] = place.center;
@@ -17,10 +18,11 @@ const onPlaceClicked = async (place: Feature) => {
     center: [lng, lat],
     zoom: 14,
   });
-};
+}
 
-const getRoutesDirections = async (place: Feature) => {
-  if (!userLocation.value) return;
+async function getRoutesDirections(place: Feature) {
+  if (!userLocation.value)
+    return;
 
   const [lng, lat] = place.center;
 
@@ -29,13 +31,13 @@ const getRoutesDirections = async (place: Feature) => {
   const start: [number, number] = [startLng, startLat];
   const end: [number, number] = [lng, lat];
 
-  await getRouteBetweenPoints(start, end);
-};
+  await getRouteBetweenPoints({ start, end });
+}
 
 watch(
   () => places.value,
   (newPlaces) => {
-    activePlace.value = '';
+    activePlace.value = "";
     setPlaceMarkers(newPlaces);
   },
 );

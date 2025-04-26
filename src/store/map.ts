@@ -1,132 +1,142 @@
-import Mapboxgl from 'mapbox-gl';
-import { defineStore } from 'pinia';
-import { directionsApi } from '../apis';
-import { Feature } from '../interfaces/places';
-import { DirectionsResponse } from '../interfaces/directions';
-
-interface MapState {
-  map?: Mapboxgl.Map;
-  markers: Mapboxgl.Marker[];
-  distance?: number;
-  duration?: number;
-}
+import type { DirectionsResponse } from "../interfaces/directions";
+import type { Feature } from "../interfaces/places";
+import mapboxgl from "mapbox-gl";
+import { defineStore, storeToRefs } from "pinia";
+import { computed, ref } from "vue";
+import { directionsApi } from "../apis";
 
 export type LngLat = [number, number];
 
-export const useMap = defineStore('map', {
-  state: (): MapState => ({
-    map: undefined,
-    markers: [],
-    distance: undefined,
-    duration: undefined,
-  }),
-  getters: {
-    isMapReady: (state): boolean => {
-      return !!state.map;
-    },
-  },
-  actions: {
-    setMap(map: Mapboxgl.Map) {
-      this.map = map;
-    },
-    setDistanceDuration({ distance, duration }: { distance: number; duration: number }) {
-      let kms = distance / 1000;
-      kms = Math.round(kms * 100);
-      kms /= 100;
+export const useMapStore = defineStore("map", () => {
+  const map = ref<mapboxgl.Map | undefined>();
+  const markers = ref<mapboxgl.Marker[]>([]);
+  const distance = ref<number | undefined>();
+  const duration = ref<number | undefined>();
 
-      this.distance = kms;
-      this.duration = Math.floor(duration / 60);
-    },
-    setPlaceMarkers(places: Feature[]) {
-      // Remove all markers
-      this.markers.forEach((marker) => marker.remove());
-      this.markers = [];
+  const isMapReady = computed(() => !!map.value);
 
-      if (!this.map) return;
+  function setMap(newMap: mapboxgl.Map) {
+    map.value = newMap;
+  }
 
-      // Add new markers
-      for (const place of places) {
-        const [lng, lat] = place.geometry.coordinates;
+  function setDistanceDuration({ distance: dist, duration: dur }: { distance: number, duration: number }) {
+    let kms = dist / 1000;
+    kms = Math.round(kms * 100);
+    kms /= 100;
 
-        const popup = new Mapboxgl.Popup().setLngLat([lng, lat]).setHTML(
-          `
+    distance.value = kms;
+    duration.value = Math.floor(dur / 60);
+  }
+
+  function setPlaceMarkers(places: Feature[]) {
+    // Remove all markers
+    markers.value.forEach((marker) => marker.remove());
+    markers.value = [];
+
+    if (!map.value)
+      return;
+
+    // Add new markers
+    for (const place of places) {
+      const [lng, lat] = place.geometry.coordinates;
+
+      const popup = new mapboxgl.Popup().setLngLat([lng, lat]).setHTML(
+        `
         <h4>${place.text}</h4></p>
         <p>${place.place_name}</p>
       `,
-        );
+      );
 
-        const marker = new Mapboxgl.Marker().setLngLat([lng, lat]).setPopup(popup).addTo(this.map);
+      const marker = new mapboxgl.Marker().setLngLat([lng, lat]).setPopup(popup).addTo(map.value);
 
-        this.markers.push(marker);
-      }
-      // Clear polyline
-      if (this.map?.getLayer('RouteString')) {
-        this.map.removeLayer('RouteString');
-        this.map.removeSource('RouteString');
-        this.distance = undefined;
-        this.duration = undefined;
-      }
-    },
-    async getRouteBetweenPoints({ start, end }: { start: LngLat; end: LngLat }) {
-      const resp = await directionsApi.get<DirectionsResponse>(`${start.join(',')};${end.join(',')}`);
-      this.setDistanceDuration({
-        distance: resp.data.routes[0].distance,
-        duration: resp.data.routes[0].duration,
-      });
-      this.setRoutePolyline(resp.data.routes[0].geometry.coordinates);
-    },
-    setRoutePolyline(coords: number[][]) {
-      const start = coords[0];
-      const end = coords[coords.length - 1];
+      // @ts-expect-error: Suppress deep type instantiation error from mapbox-gl
+      markers.value.push(marker);
+    }
 
-      // define bounds
-      const bounds = new Mapboxgl.LngLatBounds([start[0], start[1]], [end[0], end[1]]);
-      // add each point to the bounds
-      for (const coord of coords) {
-        const newCoord: [number, number] = [coord[0], coord[1]];
-        bounds.extend(newCoord);
-      }
+    if (map.value?.getLayer("RouteString")) {
+      map.value.removeLayer("RouteString");
+      map.value.removeSource("RouteString");
+      distance.value = undefined;
+      duration.value = undefined;
+    }
+  }
 
-      this.map?.fitBounds(bounds, { padding: 200 });
+  async function getRouteBetweenPoints({ start, end }: { start: LngLat, end: LngLat }) {
+    const resp = await directionsApi.get<DirectionsResponse>(`${start.join(",")};${end.join(",")}`);
+    setDistanceDuration({
+      distance: resp.data.routes[0].distance,
+      duration: resp.data.routes[0].duration,
+    });
+    setRoutePolyline(resp.data.routes[0].geometry.coordinates);
+  }
 
-      // polyline
-      const sourceData: Mapboxgl.AnySourceData = {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              properties: {},
-              geometry: {
-                type: 'LineString',
-                coordinates: coords,
-              },
+  function setRoutePolyline(coords: number[][]) {
+    const start = coords[0];
+    const end = coords[coords.length - 1];
+
+    // define bounds
+    const bounds = new mapboxgl.LngLatBounds([start[0], start[1]], [end[0], end[1]]);
+    // add each point to the bounds
+    for (const coord of coords) {
+      const newCoord: [number, number] = [coord[0], coord[1]];
+      bounds.extend(newCoord);
+    }
+
+    map.value?.fitBounds(bounds, { padding: 200 });
+
+    // polyline
+    const sourceData: mapboxgl.AnySourceData = {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: coords,
             },
-          ],
-        },
-      };
+          },
+        ],
+      },
+    };
 
-      if (this.map?.getSource('RouteString')) {
-        this.map?.removeLayer('RouteString');
-        this.map?.removeSource('RouteString');
-      }
+    if (map.value?.getSource("RouteString")) {
+      map.value?.removeLayer("RouteString");
+      map.value?.removeSource("RouteString");
+    }
 
-      this.map?.addSource('RouteString', sourceData);
+    map.value?.addSource("RouteString", sourceData);
 
-      this.map?.addLayer({
-        id: 'RouteString',
-        type: 'line',
-        source: 'RouteString',
-        layout: {
-          'line-cap': 'round',
-          'line-join': 'round',
-        },
-        paint: {
-          'line-color': 'black',
-          'line-width': 3,
-        },
-      });
-    },
-  },
+    map.value?.addLayer({
+      id: "RouteString",
+      type: "line",
+      source: "RouteString",
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      paint: {
+        "line-color": "black",
+        "line-width": 3,
+      },
+    });
+  }
+
+  return {
+    map,
+    markers,
+    distance,
+    duration,
+    isMapReady,
+    setMap,
+    setDistanceDuration,
+    setPlaceMarkers,
+    getRouteBetweenPoints,
+    setRoutePolyline,
+  };
 });
+
+export const useMapState = () => storeToRefs(useMapStore());
+export const useMapActions = () => useMapStore();

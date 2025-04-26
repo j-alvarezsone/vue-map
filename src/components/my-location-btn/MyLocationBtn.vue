@@ -1,23 +1,25 @@
 <script lang="ts" setup>
-import { useMapStore } from '../../composables';
-import { usePlacesStore } from '../../composables';
-import { computed } from 'vue';
+import { computed } from "vue";
+import { useMapState } from "../../store/map";
+import { usePlacesState } from "../../store/places";
 
-const { userLocation, isUserLocationReady } = usePlacesStore();
-const { map, isMapReady } = useMapStore();
+const { userLocation, isUserLocationReady } = usePlacesState();
+const { map, isMapReady } = useMapState();
 
 const isBtnReady = computed(() => isUserLocationReady.value && isMapReady);
 
-const onMyLocationClick = () => {
+function onMyLocationClick() {
   map.value?.flyTo({
     center: userLocation.value,
     zoom: 14,
   });
-};
+}
 </script>
 
 <template>
-  <button v-if="isBtnReady" class="btn btn-primary" @click.prevent="onMyLocationClick">Go to my location</button>
+  <button v-if="isBtnReady" class="btn btn-primary" @click.prevent="onMyLocationClick">
+    Go to my location
+  </button>
 </template>
 
 <style scoped>

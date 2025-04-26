@@ -1,31 +1,15 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
 import { usePlacesActions } from "../../../store/places";
+import { useDebouncedSearch } from "../composables/useDebouncedSearch";
 import SearchResult from "./SearchResult.vue";
 
-const debounceTimeout = ref();
-const debouncedValue = ref<string>("");
 const { searchPlacesByTerm } = usePlacesActions();
-const searchTerm = computed({
-  get() {
-    return debouncedValue.value;
-  },
-  set(value: string) {
-    if (debounceTimeout.value) {
-      clearTimeout(debounceTimeout.value);
-    }
-
-    debounceTimeout.value = setTimeout(() => {
-      debouncedValue.value = value;
-      searchPlacesByTerm(value);
-    }, 500);
-  },
-});
+const { debouncedSearchTerm } = useDebouncedSearch(searchPlacesByTerm);
 </script>
 
 <template>
   <div class="searchbar-container">
-    <input v-model="searchTerm" type="text" class="form-control" placeholder="Search places">
+    <input v-model="debouncedSearchTerm" type="text" class="form-control" placeholder="Search places">
     <SearchResult />
   </div>
 </template>

@@ -7,7 +7,7 @@ import { usePlacesState } from "../../../store/places";
 const { isLoading, userLocation, isUserLocationReady } = usePlacesState();
 const { setMap } = useMapActions();
 
-const mapElement = ref<HTMLElement>();
+const mapElement = ref<HTMLElement | undefined>();
 
 async function initMap() {
   if (!mapElement.value)

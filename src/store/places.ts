@@ -6,9 +6,9 @@ import { searchApi } from "../apis";
 export type UserLocation = [number, number]; // [lng, lat]
 
 export const usePlacesStore = defineStore("places", () => {
-  const isLoading = ref(true);
+  const isLoading = ref<boolean>(true);
   const userLocation = ref<UserLocation | undefined>(undefined);
-  const isLoadingPlaces = ref(false);
+  const isLoadingPlaces = ref<boolean>(false);
   const places = ref<Feature[]>([]);
 
   const isUserLocationReady = computed(() => !!userLocation.value);

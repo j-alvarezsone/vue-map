@@ -4,7 +4,7 @@ import router from './router/index';
 import { createPinia } from 'pinia';
 import mapboxgl from 'mapbox-gl';
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoiai1hbHZhcmV6ODYiLCJhIjoiY2twMmh5bGc3MW4wMTJ5bWNmc2o2MzJpOCJ9.y1u2AcNkWPvRrTjTFQ26Vw';
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY;
 
 const app = createApp(App);
 

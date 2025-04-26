@@ -2,9 +2,10 @@ import mapboxgl from "mapbox-gl";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import App from "./App.vue";
+import { env } from "./lib/utils/env";
 import router from "./router/index";
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY;
+mapboxgl.accessToken = env.VITE_MAPBOX_API_KEY;
 
 const app = createApp(App);
 

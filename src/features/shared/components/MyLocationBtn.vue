@@ -28,4 +28,10 @@ button {
   top: 30px;
   right: 30px;
 }
+
+@media (max-width: 768px) {
+  button {
+    top: 20px;
+  }
+}
 </style>

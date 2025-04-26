@@ -139,4 +139,22 @@ export const useMapStore = defineStore("map", () => {
 });
 
 export const useMapState = () => storeToRefs(useMapStore());
-export const useMapActions = () => useMapStore();
+export function useMapActions() {
+  const mapStore = useMapStore();
+
+  return {
+    $dispose: mapStore.$dispose,
+    $id: mapStore.$id,
+    $onAction: mapStore.$onAction,
+    $patch: mapStore.$patch,
+    $reset: mapStore.$reset,
+    $state: mapStore.$state,
+    $subscribe: mapStore.$subscribe,
+    _customProperties: mapStore._customProperties,
+    setMap: mapStore.setMap,
+    setDistanceDuration: mapStore.setDistanceDuration,
+    setPlaceMarkers: mapStore.setPlaceMarkers,
+    getRouteBetweenPoints: mapStore.getRouteBetweenPoints,
+    setRoutePolyline: mapStore.setRoutePolyline,
+  };
+}

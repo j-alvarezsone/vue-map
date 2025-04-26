@@ -75,6 +75,14 @@ export const usePlacesState = () => storeToRefs(usePlacesStore());
 export function usePlacesActions() {
   const placesStore = usePlacesStore();
   return {
+    $dispose: placesStore.$dispose,
+    $id: placesStore.$id,
+    $onAction: placesStore.$onAction,
+    $patch: placesStore.$patch,
+    $reset: placesStore.$reset,
+    $state: placesStore.$state,
+    $subscribe: placesStore.$subscribe,
+    _customProperties: placesStore._customProperties,
     setLngLat: placesStore.setLngLat,
     setIsLoadingPlaces: placesStore.setIsLoadingPlaces,
     setPlaces: placesStore.setPlaces,

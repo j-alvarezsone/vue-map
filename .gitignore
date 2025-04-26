@@ -6,6 +6,7 @@ yarn.lock
 pnpm-lock.yaml
 
 # local env files
+.env
 .env.local
 .env.*.local
 

@@ -1,11 +1,61 @@
-# Vue 3 + Typescript + Vite
+# Vue 3 + TypeScript + Vite + Mapbox
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This project is a starter template for building interactive maps using [Vue 3](https://vuejs.org/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/), and [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/). It features:
 
-## Recommended IDE Setup
+- Mapbox map integration
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+## Getting Started
 
-## Type Support For `.vue` Imports in TS
+### 1. Install dependencies
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+Using [pnpm](https://pnpm.io/):
+
+```sh
+pnpm install
+```
+
+Or with npm:
+
+```sh
+npm install
+```
+
+Or with yarn:
+
+```sh
+yarn install
+```
+
+### 2. Create a Mapbox account and get an API key
+
+Sign up at [Mapbox](https://account.mapbox.com/) and obtain your **Access Token**.
+
+### 3. Configure environment variables
+
+Create a `.env` file in the root of the project with the following content:
+
+```
+VITE_MAPBOX_API_KEY=YOUR_API_KEY
+```
+
+Replace `YOUR_API_KEY` with your actual Mapbox access token.
+
+### 4. Run the development server
+
+```sh
+pnpm dev
+```
+
+Or with npm:
+
+```sh
+npm run dev
+```
+
+Or with yarn:
+
+```sh
+yarn dev
+```
+
+The app will be available at [http://localhost:5173](http://localhost:5173) by default.
